@@ -18,9 +18,9 @@
    - Netlify will detect it's a React app and configure automatically
 
 4. **Site settings:**
-   - Build command: `cd client && npm install && npm run build`
-   - Publish directory: `client/dist`
-   - Node version: 20
+   - Build command: `cd client-simple && npm install && npm run build`
+   - Publish directory: `client-simple/dist`
+   - Node version: 18
 
 ### Option 2: GitHub Integration (Recommended for updates)
 
@@ -34,7 +34,7 @@
    - Select your repository
 
 3. **Configure build settings:**
-   - Base directory: `client`
+   - Base directory: `client-simple`
    - Build command: `npm install && npm run build`
    - Publish directory: `dist`
 
@@ -74,14 +74,14 @@
 
 ## Troubleshooting
 
-- **Build fails:** Check that all dependencies are listed in `client/package.json`
+- **Build fails:** The simplified version should build successfully with minimal dependencies
 - **API not working:** The app uses in-memory storage, so data resets on each deployment
 - **Share not working:** Make sure you're accessing via HTTPS (Netlify provides this automatically)
 
 ## Files Included
 
 - `netlify.toml` - Netlify configuration
-- `client/` - Frontend React application
+- `client-simple/` - Simplified frontend React application
 - `client/public/manifest.json` - PWA manifest
 - `client/public/sw.js` - Service worker
 - `netlify/functions/api.js` - Serverless backend functions

@@ -1,11 +1,10 @@
 [build]
-  base = "client"
-  publish = "client/dist"
-  command = "npm ci && npm run build"
+  base = "client-simple"
+  publish = "client-simple/dist"
+  command = "npm install && npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_FLAGS = "--legacy-peer-deps"
 
 [[redirects]]
   from = "/api/*"
