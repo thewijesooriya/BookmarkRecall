@@ -6,21 +6,44 @@ import { z } from "zod";
 
 async function fetchUrlMetadata(url: string) {
   try {
+    // Validate URL format
+    const parsedUrl = new URL(url);
+    if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+      throw new Error('Invalid URL protocol');
+    }
+
+    // Create abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; BookmarkBot/1.0)',
       },
+      signal: controller.signal,
     });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}`);
+    }
+    
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('text/html')) {
+      // Return basic info for non-HTML content
+      return {
+        title: parsedUrl.hostname,
+        description: '',
+        imageUrl: '',
+      };
     }
     
     const html = await response.text();
     
     // Extract title
     const titleMatch = html.match(/<title[^>]*>([^<]+)<\/title>/i);
-    const title = titleMatch?.[1]?.trim() || new URL(url).hostname;
+    const title = titleMatch?.[1]?.trim() || parsedUrl.hostname;
     
     // Extract description from meta tags
     const descriptionMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i) ||
@@ -30,16 +53,30 @@ async function fetchUrlMetadata(url: string) {
     // Extract image from meta tags
     const imageMatch = html.match(/<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i) ||
                       html.match(/<meta[^>]*name=["']twitter:image["'][^>]*content=["']([^"']+)["']/i);
-    const imageUrl = imageMatch?.[1]?.trim() || '';
+    let imageUrl = imageMatch?.[1]?.trim() || '';
+    
+    // Convert relative URLs to absolute
+    if (imageUrl && !imageUrl.startsWith('http')) {
+      imageUrl = new URL(imageUrl, url).href;
+    }
     
     return { title, description, imageUrl };
   } catch (error) {
     console.error('Error fetching URL metadata:', error);
-    return {
-      title: new URL(url).hostname,
-      description: '',
-      imageUrl: '',
-    };
+    try {
+      const fallbackUrl = new URL(url);
+      return {
+        title: fallbackUrl.hostname,
+        description: '',
+        imageUrl: '',
+      };
+    } catch {
+      return {
+        title: 'Invalid URL',
+        description: '',
+        imageUrl: '',
+      };
+    }
   }
 }
 
