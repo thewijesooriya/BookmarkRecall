@@ -1,24 +1,26 @@
 {
   "name": "My Bookmarks",
   "short_name": "Bookmarks",
-  "description": "Save and organize your favorite articles and websites",
+  "description": "Save and organize your favorite articles and websites with tagging and search capabilities",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
+  "lang": "en",
+  "version": "1.0.0",
   "icons": [
     {
       "src": "/bookmark-icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
       "src": "/bookmark-icon-512.png", 
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "share_target": {
@@ -30,5 +32,28 @@
       "url": "url"
     }
   },
-  "categories": ["productivity", "utilities"]
+  "categories": ["productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "540x960",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot-desktop.png", 
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Add Bookmark",
+      "short_name": "Add",
+      "description": "Quickly add a new bookmark",
+      "url": "/?add=true",
+      "icons": [{ "src": "/bookmark-icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }
