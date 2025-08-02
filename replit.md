@@ -1,6 +1,14 @@
 # Overview
 
-This is a modern bookmark management application built with a full-stack TypeScript architecture. The application allows users to save, organize, search, and manage web bookmarks with features like URL metadata fetching, tag-based organization, and responsive design. It's designed as a personal bookmark manager with a clean, intuitive interface for organizing and accessing saved web content.
+This is a modern bookmark management application built with a full-stack TypeScript architecture. The application allows users to save, organize, search, and manage web bookmarks with features like URL metadata fetching, tag-based organization, responsive design, and mobile browser integration. It's designed as a personal bookmark manager similar to Pocket, with seamless sharing capabilities from mobile browsers like Opera and Chrome.
+
+## Recent Changes (August 2025)
+- Added Web Share API support for mobile browser integration
+- Created dedicated `/share` route for handling shared articles from browsers
+- Implemented PWA manifest with share_target for Android app integration
+- Added service worker for offline capabilities and share handling
+- Created mobile-optimized sharing interface with auto-metadata fetching
+- Added informational banner to guide users on mobile sharing features
 
 # User Preferences
 
@@ -36,6 +44,9 @@ Preferred communication style: Simple, everyday language.
 - **Search Functionality**: Full-text search across titles, descriptions, URLs, and tags
 - **Responsive Design**: Mobile-first design with grid/list view toggles
 - **Form Validation**: Zod schemas for runtime type checking and validation
+- **Mobile Browser Integration**: Web Share API support for saving articles directly from Opera, Chrome, and other mobile browsers
+- **PWA Capabilities**: Progressive Web App with manifest, service worker, and share target for seamless mobile experience
+- **Dedicated Sharing Interface**: Optimized `/share` route for handling shared content with auto-fill functionality
 
 ## External Dependencies
 

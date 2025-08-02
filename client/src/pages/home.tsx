@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Bookmark } from "@shared/schema";
 import Header from "@/components/header";
@@ -6,15 +6,46 @@ import SearchFilters from "@/components/search-filters";
 import BookmarkCard from "@/components/bookmark-card";
 import AddBookmarkModal from "@/components/add-bookmark-modal";
 import { Button } from "@/components/ui/button";
-import { Plus, Grid3X3, List } from "lucide-react";
+import { Plus, Grid3X3, List, Share2 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [showShareInfo, setShowShareInfo] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
+
+  // Check if Web Share API is supported
+  const canShare = typeof navigator !== 'undefined' && navigator.share;
+
+  useEffect(() => {
+    // Show share info on first visit
+    const hasSeenShareInfo = localStorage.getItem('hasSeenShareInfo');
+    if (!hasSeenShareInfo && isMobile) {
+      setShowShareInfo(true);
+      localStorage.setItem('hasSeenShareInfo', 'true');
+    }
+  }, [isMobile]);
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: 'My Bookmarks',
+        text: 'Save and organize your favorite articles',
+        url: window.location.origin
+      });
+    } catch (error) {
+      toast({
+        title: "Share not supported",
+        description: "Your browser doesn't support sharing. You can copy the URL instead.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const { data: bookmarks = [], isLoading } = useQuery<Bookmark[]>({
     queryKey: ["/api/bookmarks/search", { q: searchQuery, tags: selectedTags.join(",") }],
@@ -41,6 +72,29 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      
+      {/* Share Info Banner */}
+      {showShareInfo && isMobile && (
+        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mx-4 mt-4 rounded-r-lg">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <Share2 className="h-5 w-5 text-blue-400" />
+            </div>
+            <div className="ml-3 flex-1">
+              <p className="text-sm text-blue-700">
+                <strong>Tip:</strong> You can share articles directly from your browser! 
+                When reading an article, tap the share button and select "My Bookmarks" to save it instantly.
+              </p>
+              <button 
+                onClick={() => setShowShareInfo(false)}
+                className="mt-2 text-xs text-blue-600 underline"
+              >
+                Got it, don't show again
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <SearchFilters
